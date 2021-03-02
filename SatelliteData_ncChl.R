@@ -11,8 +11,7 @@ ChlA_lon=v1$dim[[1]]$vals
 ChlA_lat=v1$dim[[2]]$vals
 dates=as.POSIXlt(v1$dim[[3]]$vals,origin='1970-01-01',tz='GMT')
 
-#removing the incorrect max value
-is.na(ChlAvar) <- ChlAvar >2
+#plotting all values greater than 2, as 2
 ChlAvar[ChlAvar > 2] = 2
 
 #creating maps
