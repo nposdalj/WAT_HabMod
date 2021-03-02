@@ -2,7 +2,7 @@ library(ncdf4)
 library(httr)
 
 #load files
-SST = nc_open("monthly variable with the right long and lat/erdMH1sstdmdayR20190SQ_db9b_1c36_0a7f.nc")
+SST = nc_open("erdMH1sstdmdayR20190SQ_db9b_1c36_0a7f.nc")
 names(SST$var)
 v1=SST$var[[1]]
 SSTvar=ncvar_get(SST,v1)

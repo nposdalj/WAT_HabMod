@@ -6,7 +6,7 @@ library(oceanmap)
 library(viridis)
 
 #load files
-sal = nc_open("monthly variable with the right long and lat/coastwatchSMOSv662SSS1day_f370_bdcf_ecf9.nc")
+sal = nc_open("coastwatchSMOSv662SSS1day_f370_bdcf_ecf9.nc")
 names(sal$var)
 v1=sal$var[[1]]
 Salvar=ncvar_get(sal,v1)

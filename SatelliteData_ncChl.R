@@ -3,7 +3,7 @@ library(httr)
 library (naniar)
 
 #load files
-ChlA = nc_open("monthly variable with the right long and lat/erdMH1chlamday_8b69_53f4_fca7.nc")
+ChlA = nc_open("erdMH1chlamday_8b69_53f4_fca7.nc")
 names(ChlA$var)
 v1=ChlA$var[[1]]
 ChlAvar=ncvar_get(ChlA,v1)
