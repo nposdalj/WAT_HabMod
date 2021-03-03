@@ -51,9 +51,9 @@ names(df)[names(df)=="layer"]="SST"
 mid = mean(df$SST)
 ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
   geom_raster(data = df , aes(x = x, y = y, fill = SST)) + 
-  ggtitle(paste("SST", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
+  ggtitle(paste("Monthly SST", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
   geom_point(x=-76, y=33.69, color = "red",size = 3)+xlab("Latitude")+ylab("Longitude")+
-  scale_fill_gradient2(midpoint = mid, low="green", mid = "yellow",high="red")
+  scale_fill_gradient2(midpoint = mid, low="yellow", mid = "orange",high="red")
 
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function

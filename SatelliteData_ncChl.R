@@ -49,12 +49,13 @@ box()
 r = raster(t(ChlAvar[,,1]),xmn = min(ChlA_lon),xmx = max(ChlA_lon),ymn=min(ChlA_lat),ymx=max(ChlA_lat))
 points = rasterToPoints(r, spatial = TRUE)
 df = data.frame(points)
-names(df)[names(df)=="layer"]="Chla" 
+names(df)[names(df)=="layer"]="Chla"
+mid = mean(df$Chla)
 ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
   geom_raster(data = df , aes(x = x, y = y, fill = Chla)) + 
-  ggtitle(paste("Monthly Chl A", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "yellow",size=3)+
+  ggtitle(paste("Monthly Chl A", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
   geom_point(x=-76, y=33.69, color = "red",size = 3)+xlab("Latitude")+ylab("Longitude")+
-  scale_fill_gradient(low="blue", high="green")
+  scale_fill_gradient2(midpoint = mid, low="blue", mid = "yellow",high="green")
 
 #plotting time series GS
 I=which(ChlA_lon>=-76.25 & ChlA_lon<=-75.75) #change lon to SST_lon values to match ours, use max and min function
