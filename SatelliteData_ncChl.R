@@ -4,6 +4,8 @@ library (naniar)
 library(ggmap)
 library("rnaturalearth")
 library("rnaturalearthdata")
+library(ggplot2)
+library(rgeos)
 
 #load files
 ChlA = nc_open("erdMH1chlamday_8b69_53f4_fca7.nc")
@@ -44,31 +46,15 @@ axis(4, las=1)
 box()
 
 #creating maps in ggplot
+r = raster(t(ChlAvar[,,1]),xmn = min(ChlA_lon),xmx = max(ChlA_lon),ymn=min(ChlA_lat),ymx=max(ChlA_lat))
 points = rasterToPoints(r, spatial = TRUE)
 df = data.frame(points)
-names(df)[names(df)=="layer"]="Chla"
+names(df)[names(df)=="layer"]="Chla" 
 ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
   geom_raster(data = df , aes(x = x, y = y, fill = Chla)) + 
-  ggtitle(paste("Monthly Chl A", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
+  ggtitle(paste("Monthly Chl A", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "yellow",size=3)+
   geom_point(x=-76, y=33.69, color = "red",size = 3)+xlab("Latitude")+ylab("Longitude")+
   scale_fill_gradient(low="blue", high="green")
-
-
-#plotting time series HZ
-I=which(ChlA_lon>=-66.6 & ChlA_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
-J=which(ChlA_lat>=40.81165 & ChlA_lat<=41.31165) #change ""
-sst2=ChlAvar[I,J,] 
-
-n=dim(sst2)[3] 
-
-res=rep(NA,n) 
-for (i in 1:n) 
-  res[i]=mean(sst2[,,i],na.rm=TRUE) 
-
-plot(1:n,res,axes=FALSE,type='o',pch=20,xlab='',ylab='Chla (mg m-3)') 
-axis(2) 
-axis(1,1:n,format(dates,'%m')) 
-box()
 
 #plotting time series GS
 I=which(ChlA_lon>=-76.25 & ChlA_lon<=-75.75) #change lon to SST_lon values to match ours, use max and min function
@@ -84,148 +70,4 @@ for (i in 1:n)
 plot(1:n,res,axes=FALSE,type='o',pch=20,xlab='',ylab='Chla (mg m-3)') 
 axis(2) 
 axis(1,1:n,format(dates,'%m')) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[2]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[3]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[4]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[5]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[6]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[7]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[8]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[9]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[10]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[11]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[12]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
-box()
-
-#begin plot
-layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
-layout.show(2) 
-par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[13]))
-#adding color scale
-par(mar=c(3,1,3,3))
-source('scale.R') 
-image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
-axis(4, las=1) 
 box()
