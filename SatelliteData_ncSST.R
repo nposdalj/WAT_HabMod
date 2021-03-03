@@ -55,7 +55,7 @@ ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=F
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
 J=which(SST_lat>=40.81165 & SST_lat<=41.31165) #change ""
-sst2=SSTvar[I,J,] 
+sst2=SSTvar[I,J,]
 
 n=dim(sst2)[3] 
 
