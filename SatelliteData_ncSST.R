@@ -4,6 +4,8 @@ library(sf)
 library(dplyr)
 library(ncdf)
 library(raster)
+library("rnaturalearth")
+library("rnaturalearthdata")
 
 #load files
 SST = nc_open("erdMH1sstdmdayR20190SQ_db9b_1c36_0a7f.nc")
@@ -14,14 +16,18 @@ SST_lon=v1$dim[[1]]$vals
 SST_lat=v1$dim[[2]]$vals
 dates=as.POSIXlt(v1$dim[[3]]$vals,origin='1970-01-01',tz='GMT')
 
-#creating maps
+#loading the world
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
 #setting color breaks
 h=hist(SSTvar[,,1],100,plot=FALSE)
 breaks=h$breaks
 n=length(breaks)-1
 jet.colors <-colorRampPalette(c("blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
 c=jet.colors(n)
-#begin plot
+
+#plotting in base R
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
@@ -35,6 +41,16 @@ source('scale.R')
 image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='SST') 
 axis(4, las=1) 
 box()
+
+#plotting in ggplot
+points = rasterToPoints(r, spatial = TRUE)
+df = data.frame(points)
+names(df)[names(df)=="layer"]="SST"
+ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
+  geom_raster(data = df , aes(x = x, y = y, fill = SST)) + 
+  ggtitle(paste("SST", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
+  geom_point(x=-76, y=33.69, color = "green",size = 3)+xlab("Latitude")+ylab("Longitude")+
+  scale_fill_gradient(low="blue", high="red")
 
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function

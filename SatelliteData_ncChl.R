@@ -2,7 +2,8 @@ library(ncdf4)
 library(httr)
 library (naniar)
 library(ggmap)
-library(OpenStreetMap)
+library("rnaturalearth")
+library("rnaturalearthdata")
 
 #load files
 ChlA = nc_open("erdMH1chlamday_8b69_53f4_fca7.nc")
@@ -13,20 +14,21 @@ ChlA_lon=v1$dim[[1]]$vals
 ChlA_lat=v1$dim[[2]]$vals
 dates=as.POSIXlt(v1$dim[[3]]$vals,origin='1970-01-01',tz='GMT')
 
+#loading the world
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
 #plotting all values greater than 2, as 2
 ChlAvar[ChlAvar > 2] = 2
 
-#adding land mass
-EastCoastMap = openmap(c(-80,-65),c(31,43))
-
-#creating maps
 #setting color breaks
 h=hist(ChlAvar[,,1],100,plot=FALSE)
 breaks=h$breaks
 n=length(breaks)-1
 jet.colors <-colorRampPalette(c("blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
 c=jet.colors(n)
-#begin plot
+
+#creating maps in base R
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
@@ -40,6 +42,17 @@ source('scale.R')
 image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
 axis(4, las=1) 
 box()
+
+#creating maps in ggplot
+points = rasterToPoints(r, spatial = TRUE)
+df = data.frame(points)
+names(df)[names(df)=="layer"]="Chla"
+ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
+  geom_raster(data = df , aes(x = x, y = y, fill = Chla)) + 
+  ggtitle(paste("Monthly Chl A", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
+  geom_point(x=-76, y=33.69, color = "red",size = 3)+xlab("Latitude")+ylab("Longitude")+
+  scale_fill_gradient(low="blue", high="green")
+
 
 #plotting time series HZ
 I=which(ChlA_lon>=-66.6 & ChlA_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
