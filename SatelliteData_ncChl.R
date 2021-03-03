@@ -1,6 +1,8 @@
 library(ncdf4)
 library(httr)
 library (naniar)
+library(ggmap)
+library(OpenStreetMap)
 
 #load files
 ChlA = nc_open("erdMH1chlamday_8b69_53f4_fca7.nc")
@@ -14,6 +16,9 @@ dates=as.POSIXlt(v1$dim[[3]]$vals,origin='1970-01-01',tz='GMT')
 #plotting all values greater than 2, as 2
 ChlAvar[ChlAvar > 2] = 2
 
+#adding land mass
+EastCoastMap = openmap(c(-80,-65),c(31,43))
+
 #creating maps
 #setting color breaks
 h=hist(ChlAvar[,,1],100,plot=FALSE)
@@ -25,16 +30,16 @@ c=jet.colors(n)
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
-image(ChlA_lon,rev(ChlA_lat),ChlAvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly ChlA", dates[1]))
+r = raster(t(ChlAvar[,,1]),xmn = min(ChlA_lon),xmx = max(ChlA_lon),ymn=min(ChlA_lat),ymx=max(ChlA_lat))
+image(r,col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs="i",yaxs="i",asp=-1, main=paste("Monthly ChlA", dates[1]))
+points(-66.35, rep(41.06165),pch=20,cex=1)
+points(-76, rep(33.6699),pch=20,cex=2)
 #adding color scale
 par(mar=c(3,1,3,3))
 source('scale.R') 
 image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='Chl a') 
 axis(4, las=1) 
 box()
-#adding HARP point
-points(-66.35, rep(41.06165),pch=20,cex=2)
-points(33.6699, rep(-76),pch=20,cex=2)
 
 #plotting time series HZ
 I=which(ChlA_lon>=-66.6 & ChlA_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function

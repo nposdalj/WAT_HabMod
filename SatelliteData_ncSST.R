@@ -1,8 +1,12 @@
 library(ncdf4)
 library(httr)
+library(sf)
+library(dplyr)
+library(ncdf)
+library(raster)
 
 #load files
-SST = nc_open("monthly variable with the right long and lat/erdMH1sstdmdayR20190SQ_db9b_1c36_0a7f.nc")
+SST = nc_open("erdMH1sstdmdayR20190SQ_db9b_1c36_0a7f.nc")
 names(SST$var)
 v1=SST$var[[1]]
 SSTvar=ncvar_get(SST,v1)
@@ -21,16 +25,16 @@ c=jet.colors(n)
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
-image(SST_lon,rev(SST_lat),SSTvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly SST", dates[1]))
+r = raster(t(SSTvar[,,1]),xmn = min(SST_lon),xmx = max(SST_lon),ymn=min(SST_lat),ymx=max(SST_lat))
+image(r,col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xlim = c(min(SST_lon),max(SST_lon)),xaxs='i',asp=0, main=paste("Monthly SST", dates[1]))
+points(-66.35, rep(41.06165),pch=20,cex=2)
+points(-76, rep(33.6699),pch=20,cex=2)
 #adding color scale
 par(mar=c(3,1,3,3))
 source('scale.R') 
 image.scale(sst[,,1], col=c, breaks=breaks, horiz=FALSE, yaxt="n",xlab='',ylab='',main='SST') 
 axis(4, las=1) 
 box()
-#adding HARP point
-points(-66.35, rep(41.06165),pch=20,cex=2)
-points(33.6699, rep(-76),pch=20,cex=2)
 
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
@@ -68,7 +72,7 @@ box()
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
-image(SST_lon,rev(SST_lat),SSTvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly SST", dates[2]))
+image(SST_lon,rev(SST_lat),SSTvar[,,2],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly SST", dates[2]))
 #adding color scale
 par(mar=c(3,1,3,3))
 source('scale.R') 
@@ -80,7 +84,7 @@ box()
 layout(matrix(c(1,2,3,0,4,0), nrow=1, ncol=2), widths=c(5,1), heights=4) 
 layout.show(2) 
 par(mar=c(3,3,3,1))
-image(SST_lon,rev(SST_lat),SSTvar[,,1],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly SST", dates[3]))
+image(SST_lon,rev(SST_lat),SSTvar[,,3],col=c,breaks=breaks,xlab='',ylab='',axes=TRUE,xaxs='i',yaxs='i',asp=1, main=paste("Monthly SST", dates[3]))
 #adding color scale
 par(mar=c(3,1,3,3))
 source('scale.R') 
