@@ -3,6 +3,8 @@ library(httr)
 library(sf)
 library(dplyr)
 library(raster)
+library(rgeos)
+library(ggplot2)
 library("rnaturalearth")
 library("rnaturalearthdata")
 
