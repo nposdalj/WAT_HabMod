@@ -2,8 +2,9 @@ library(ncdf4)
 library(httr)
 library(sf)
 library(dplyr)
-library(ncdf)
 library(raster)
+library(rgeos)
+library(ggplot2)
 library("rnaturalearth")
 library("rnaturalearthdata")
 
@@ -43,14 +44,16 @@ axis(4, las=1)
 box()
 
 #plotting in ggplot
+r = raster(t(SSTvar[,,1]),xmn = min(SST_lon),xmx = max(SST_lon),ymn=min(SST_lat),ymx=max(SST_lat))
 points = rasterToPoints(r, spatial = TRUE)
 df = data.frame(points)
 names(df)[names(df)=="layer"]="SST"
+mid = mean(df$SST)
 ggplot(data=world) +  geom_sf()+coord_sf(xlim= c(-81,-65),ylim=c(31,43),expand=FALSE)+
   geom_raster(data = df , aes(x = x, y = y, fill = SST)) + 
   ggtitle(paste("SST", dates[1]))+geom_point(x = -66.3, y = 41.1, color = "black",size=3)+
   geom_point(x=-76, y=33.69, color = "green",size = 3)+xlab("Latitude")+ylab("Longitude")+
-  scale_fill_gradient(low="blue", high="red")
+  scale_fill_gradient2(midpoint = mid, low="blue", mid = "yellow",high="red")
 
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
