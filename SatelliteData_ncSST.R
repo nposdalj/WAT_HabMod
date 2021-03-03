@@ -35,7 +35,7 @@ points(33.6699, rep(-76),pch=20,cex=2)
 #plotting time series HZ 
 I=which(SST_lon>=-66.6 & SST_lon<=-66.1) #change lon to SST_lon values to match ours, use max and min function
 J=which(SST_lat>=40.81165 & SST_lat<=41.31165) #change ""
-sst2=SSTvar[I,J,] 
+sst2=SSTvar[I,J,]
 
 n=dim(sst2)[3] 
 
