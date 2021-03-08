@@ -6,7 +6,7 @@ siteabrev = 'GS'; %abbreviation of site.
 sp = 'Pm'; % your species code
 ID_dir = 'E:\Project Sites\GS\TPWS_125'; %where the ID files are stored
 saveDir = 'E:\Project Sites\GS\Seasonality'; %specify directory to save files
-titleNAME = 'Western Atlantic - Gulf Stream';
+titleNAME = 'Western Atlantic - Heezen Canyon';
 %% load environmental
 HZ = 'HZ.xlsx';
 GS = 'GS.xlsx';
