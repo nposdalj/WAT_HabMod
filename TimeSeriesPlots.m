@@ -158,9 +158,16 @@ plot(weekTable.tbin, weekTable.NormEffort_Bin*100,'.r')
 ylim([-1 101])
 ylabel('Percent effort')
 legend('Sperm Whale','Echosounder','Effort');
-title(['Weekly Presence of Sperm whales and Echosounders in the ',titleNAME])
-saveas(gcf,[saveDir,'\',siteabrev,'WeeklyPresence_EchoSounder.png']);
+title([{'Weekly Presence of Sperm whales and Echosounders at the ' titleNAME}])
+saveas(gcf,[saveDir,'\',siteabrev,'WeeklyPresence_PM_Echoounder.png']);
 
+%just echosounder
+figure
+bar(Dtable_week.tbin, Dtable_week.Prop)
+ylabel('Proportion of hours per week')
+xlim([min(Dtable_week.tbin)-7 max(Dtable_week.tbin)+7])
+title(['Echosounder Weekly Presence at site GS'])
+saveas(gcf,[saveDir,'\','GS_WeeklyPresence_Echosounder.png']);
 
 %Plot proportion of hours per DAY with presence from each group
 figure
