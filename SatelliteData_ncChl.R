@@ -6,6 +6,7 @@ library("rnaturalearth")
 library("rnaturalearthdata")
 library(ggplot2)
 library(rgeos)
+library(raster)
 
 #load files
 ChlA = nc_open("erdMH1chlamday_8b69_53f4_fca7.nc")
