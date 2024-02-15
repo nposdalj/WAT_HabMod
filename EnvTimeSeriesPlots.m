@@ -1,12 +1,12 @@
 clearvars
 close all
 %% Parameters defined by user
-filePrefix = 'WAT_GS_03'; % File name to match. 
-siteabrev = 'GS'; %abbreviation of site.
+filePrefix = 'WAT_BP'; % File name to match. 
+siteabrev = 'BP'; %abbreviation of site.
 sp = 'Pm'; % your species code
-saveDir = 'E:\Project Sites\GS\Seasonality'; %specify directory to load/save detection files
+saveDir = 'I:\My Drive\WAT_TPWS_metadataReduced\SeasonalityAnalysis\BP'; %specify directory to load/save detection files
 titleNAME = 'Western Atlantic - Gulf Stream'; %title name for plots
-HZ = 'HZ.xlsx'; %environmetnal data file name
+HZ = 'C:\Users\nposd\Documents\GitHub\SeaTech\2021-2022\EnvironmentalData\Chla_BP_Daily.csv'; %environmetnal data file name
 %% load environmental
 HZ = readtable(HZ);
 %% load workspace with presence data
@@ -16,7 +16,7 @@ load([saveDir,'\',siteabrev,'_workspaceStep2.mat']);
 dayTable.day= double(dayTable.day);
 dayTable = retime(dayTable,'daily','fillwithconstant');
 %% Retime for weekly presence
-%day table
+%week table table
 weekTable = retime(dayTable,'weekly','sum');
 weekTable.NormEffort_Bin = weekTable.Effort_Sec ./weekTable.MaxEffort_Sec;
 weekTable.NormEffort_Bin(isnan(weekTable.NormEffort_Bin)) = 0;
@@ -34,11 +34,15 @@ monthlyTable.month = [];
 if strcmp(siteabrev, 'HZ')
     HZ(end,:) = [];
     monthlyData = join(monthlyTable,HZ);
+elseif strcmp(siteabrev,'BP')
+    dayTable.time = dayTable.tbin;
+    DailyData = join(dayTable,HZ);
 else
     GS.tbin = monthlyTable.tbin;
     GS.Month = [];
     monthlyData = join(timetable2table(monthlyTable),GS);
 end
+
 
 %% Plots
 %Plot proportion of hours per DAY with sperm whale presence
@@ -67,8 +71,13 @@ legend('Sperm Whale','Effort');
 title(['Weekly Presence of Sperm whales in the ',titleNAME])
 saveas(gcf,[saveDir,'\',siteabrev,'WeeklyPresence.png']);
 
-%Plot proportion of hours per month with sperm whale presence
+%Plot sperm whale presence with environmental data and echosounder
 figure
+bar(pmDATA.tbin,pmDATA.Count_Bin)
+addaxis(SST_GS.time,SST_GS.analysed_sst,'b','LineWidth',3)
+addaxis(Chl_GS.time,Chl_GS.chla,'g','LineWidth',3)
+addaxis(echoTABLE.StartTime,echoTABLE.EchoDuration,'.r')
+
 % yyaxis left
 bar(monthlyData.tbin, monthlyData.HoursProp,'k')
 addaxis(monthlyData.tbin,monthlyData.SST,'b','LineWidth',3)
